@@ -1,13 +1,13 @@
-FROM python:2.7-slim
+FROM python:2.7-alpine
 
-MAINTAINER Scott Blake "Scott.Blake@mail.wvu.edu"
+MAINTAINER Erlend Finvåg <erlend.finvag@gmail.com>
 
 EXPOSE 8089
 
-CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["--processes 4", "--workers 2"]
 
-RUN apt-get update -qq \
-  && apt-get install -y -qq apache2 apache2-utils curl libapache2-mod-wsgi \
+RUN apk add -U uwsgi-python curl \
   && pip install -q flask \
   && mkdir -p /margarita /var/lock/apache2 /var/run/apache2 \
   && curl -ksSL https://github.com/jessepeterson/margarita/tarball/master \
@@ -18,18 +18,8 @@ RUN apt-get update -qq \
   && cp -rf wdas-reposado-*/code/reposadolib /margarita \
   && rm -f master /etc/apache2/sites-enabled/000-default.conf \
   && rm -rf jessepeterson-margarita-* wdas-reposado-* \
-  && apt-get -y -qq remove --purge curl \
-  && apt-get -y -qq autoremove --purge \
-  && apt-get -qq clean \
-  && a2enmod auth_digest authn_anon authn_dbd authn_dbm authn_socache \
-             authnz_fcgi authnz_ldap authz_dbd authz_dbm authz_groupfile \
-             authz_owner ssl \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  && adduser -D margarita \
+  && apk del curl \
+  && rm -rf /var/lib/apk/* /tmp/* /var/tmp/*
 
-COPY extras.conf /
-COPY margarita.conf /etc/apache2/sites-enabled/
-COPY margarita.wsgi /
-COPY preferences.plist /margarita/
-
-RUN chgrp -R www-data /margarita \
-  && chmod -R g+r /margarita
+COPY . /
