@@ -13,10 +13,8 @@ RUN apk add -U uwsgi-python curl \
   && curl -sSL https://github.com/jessepeterson/margarita/tarball/master \
     | tar zx \
   && cp -rf jessepeterson-margarita-*/* /margarita \
-  && rm -f master \
   && curl -sSL https://github.com/wdas/reposado/tarball/master | tar zx \
   && cp -rf wdas-reposado-*/code/reposadolib /margarita \
-  && rm -f master /etc/apache2/sites-enabled/000-default.conf \
   && rm -rf jessepeterson-margarita-* wdas-reposado-* \
   && adduser -D margarita \
   && apk del curl \
