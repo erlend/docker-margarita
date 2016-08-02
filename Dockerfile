@@ -10,11 +10,11 @@ CMD ["--processes 4", "--workers 2"]
 RUN apk add -U uwsgi-python curl \
   && pip install -q flask \
   && mkdir -p /margarita /var/lock/apache2 /var/run/apache2 \
-  && curl -ksSL https://github.com/jessepeterson/margarita/tarball/master \
+  && curl -sSL https://github.com/jessepeterson/margarita/tarball/master \
     | tar zx \
   && cp -rf jessepeterson-margarita-*/* /margarita \
   && rm -f master \
-  && curl -ksSL https://github.com/wdas/reposado/tarball/master | tar zx \
+  && curl -sSL https://github.com/wdas/reposado/tarball/master | tar zx \
   && cp -rf wdas-reposado-*/code/reposadolib /margarita \
   && rm -f master /etc/apache2/sites-enabled/000-default.conf \
   && rm -rf jessepeterson-margarita-* wdas-reposado-* \
