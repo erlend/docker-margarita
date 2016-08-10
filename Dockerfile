@@ -5,7 +5,7 @@ MAINTAINER Erlend Finvåg <erlend.finvag@gmail.com>
 EXPOSE 8089
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["--processes 4", "--workers 2"]
+CMD ["--processes 4", "--workers 2", "--socket :8089"]
 
 RUN apk add -U uwsgi-python curl \
   && pip install -q flask \
